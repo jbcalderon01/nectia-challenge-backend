@@ -7,7 +7,6 @@ export interface IProduct {
   sku: string;
   image_url: string;
   price: number;
-  tags: string[];
   quantity: number;
   created_at: Date;
 }

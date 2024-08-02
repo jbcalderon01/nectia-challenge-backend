@@ -11,8 +11,6 @@ export type GetUserDto = {
 };
 
 export type GetUsersDto = {
-  username?: string;
-  email?: string;
   per_page: number;
   page: number;
   sortBy?: string;

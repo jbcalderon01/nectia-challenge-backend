@@ -32,8 +32,6 @@ export function UsersController(userServices: IUserServices) {
     const {
       page = 0,
       per_page = 10,
-      email,
-      username,
       sortBy = "createdAt",
       sortDirection = "desc",
     } = req.query;
@@ -43,8 +41,6 @@ export function UsersController(userServices: IUserServices) {
       per_page: per_page,
       sortBy: sortBy as string,
       sortDirection: sortDirection as "asc" | "desc",
-      email,
-      username,
     });
 
     return users;
@@ -65,7 +61,8 @@ export function UsersController(userServices: IUserServices) {
       username,
     } = req.body;
     const { userId } = req.params;
-
+    console.log("userId", userId);
+    console.log("req.body", req.body);
     const user = await userServices.updateUser({
       _id: userId,
       date_of_birth,

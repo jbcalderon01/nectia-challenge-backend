@@ -14,7 +14,6 @@ export class ProductRepository implements IProductRepository {
 
   async createProduct(dto: CreateProductDto): Promise<IProduct> {
     const productObj = {
-      tags: dto.tags,
       name: dto.name,
       description: dto.description,
       sku: dto.sku,
@@ -77,38 +76,25 @@ export class ProductRepository implements IProductRepository {
   }
 
   async getAllProducts(dto: GetProductsDto): Promise<TPagination<IProduct>> {
-    const {
-      name,
-      price,
-      quantity,
-      sku,
-      tags,
-      page,
-      per_page,
-      sortBy,
-      sortDirection,
-    } = dto;
-
-    const query = {
-      ...(name && { name: { $regex: name, $options: "i" } }),
-      ...(sku && { sku: sku }),
-      ...(price && { price: price }),
-      ...(quantity && { quantity: quantity }),
-      ...(tags && { tags: { $in: tags } }),
-    };
+    const { page, per_page, sortBy, sortDirection } = dto;
 
     const response = await this.dbClient
       .collection<IProduct>(this.collection)
-      .find(query, {
-        ...(per_page && { limit: per_page }),
-        ...(page && { skip: page * per_page }),
-        ...(sortBy && { sort: { [sortBy]: sortDirection === "asc" ? 1 : -1 } }),
-      })
+      .find(
+        {},
+        {
+          ...(per_page && { limit: per_page }),
+          ...(page && { skip: page * per_page }),
+          ...(sortBy && {
+            sort: { [sortBy]: sortDirection === "asc" ? 1 : -1 },
+          }),
+        }
+      )
       .toArray();
 
     const totalCount = await this.dbClient
       .collection<IProduct>(this.collection)
-      .countDocuments(query);
+      .countDocuments({});
 
     return {
       data: response,

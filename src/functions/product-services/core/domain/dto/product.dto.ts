@@ -11,11 +11,6 @@ export type GetProductDto =
   | { sku: string; product_id?: string };
 
 export type GetProductsDto = {
-  name?: string;
-  sku?: string;
-  price?: number;
-  quantity?: number;
-  tags?: string[];
   per_page: number;
   page: number;
   sortBy?: string;

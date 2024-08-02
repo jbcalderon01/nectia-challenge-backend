@@ -34,13 +34,8 @@ export function ProductsController(productServices: IProductServices) {
     const {
       page = 0,
       per_page = 10,
-      name,
-      sku,
-      price,
-      quantity,
       sortBy = "createdAt",
       sortDirection = "desc",
-      tags,
     } = req.query;
 
     const products = await productServices.getAllProducts({
@@ -48,11 +43,6 @@ export function ProductsController(productServices: IProductServices) {
       per_page: per_page,
       sortBy: sortBy as string,
       sortDirection: sortDirection as "asc" | "desc",
-      tags: tags ? JSON.parse(tags as string) : undefined,
-      name: name as string,
-      sku: sku as string,
-      price: price,
-      quantity: quantity,
     });
 
     return products;
@@ -64,8 +54,7 @@ export function ProductsController(productServices: IProductServices) {
       Body: UpdateProductDto;
     }>
   ) {
-    const { name, price, description, image_url, quantity, sku, tags } =
-      req.body;
+    const { name, price, description, image_url, quantity, sku } = req.body;
     const { productId } = req.params;
 
     const product = await productServices.updateProduct({
@@ -76,7 +65,6 @@ export function ProductsController(productServices: IProductServices) {
       image_url,
       quantity,
       sku,
-      tags,
     });
 
     return product;
@@ -87,16 +75,8 @@ export function ProductsController(productServices: IProductServices) {
       Body: CreateProductDto;
     }>
   ) {
-    const {
-      name,
-      price,
-      created_at,
-      description,
-      tags,
-      image_url,
-      quantity,
-      sku,
-    } = req.body;
+    const { name, price, created_at, description, image_url, quantity, sku } =
+      req.body;
 
     const product = await productServices.createProduct({
       name,
@@ -104,7 +84,6 @@ export function ProductsController(productServices: IProductServices) {
       created_at,
       description,
       image_url,
-      tags,
       quantity,
       sku,
     });

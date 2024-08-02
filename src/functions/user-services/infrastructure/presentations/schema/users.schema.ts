@@ -7,7 +7,7 @@ export const createUserSchemaInput: SchemaCompiler = {
       properties: {
         first_name: { type: "string" },
         last_name: { type: "string" },
-        email: { type: "email" },
+        email: { type: "string", format: "email" },
         username: { type: "string" },
         date_of_birth: { type: "string" },
       },
@@ -36,7 +36,10 @@ export const updateUserSchemaInput: SchemaCompiler = {
       properties: {
         first_name: { type: "string" },
         last_name: { type: "string" },
-        email: { type: "email" },
+        email: {
+          type: "string",
+          format: "email",
+        },
         username: { type: "string" },
         date_of_birth: { type: "string" },
       },
@@ -53,8 +56,6 @@ export const getAllUsersSchemaInput: SchemaCompiler = {
         page: { type: "number", default: 0 },
         sortBy: { type: "string", default: "created_at" },
         sortDirection: { type: "string", default: "desc" },
-        username: { type: "string" },
-        email: { type: "string" },
       },
     },
   },

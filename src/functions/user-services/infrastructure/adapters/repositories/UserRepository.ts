@@ -15,7 +15,7 @@ export class UserRepository implements IUserRepository {
   async createUser(dto: CreateUserDto): Promise<IUser> {
     const now = new Date();
     const userObj = {
-      date_of_birth: dto.date_of_birth,
+      date_of_birth: new Date(dto.date_of_birth),
       email: dto.email,
       first_name: dto.first_name,
       last_name: dto.last_name,
@@ -55,6 +55,8 @@ export class UserRepository implements IUserRepository {
   }
 
   async updateUser({ _id, ...rest }: UpdateUserDto): Promise<IUser | null> {
+    const now = new Date();
+
     const response = await this.dbClient
       .collection<IUser>(this.collection)
       .findOneAndUpdate(
@@ -64,6 +66,10 @@ export class UserRepository implements IUserRepository {
         {
           $set: {
             ...rest,
+            ...(rest.date_of_birth && {
+              date_of_birth: new Date(rest.date_of_birth),
+            }),
+            updated_at: now,
           },
         },
         { returnDocument: "after" }
@@ -73,25 +79,25 @@ export class UserRepository implements IUserRepository {
   }
 
   async getAllUsers(dto: GetUsersDto): Promise<TPagination<IUser>> {
-    const { email, username, page, per_page, sortBy, sortDirection } = dto;
-
-    const query = {
-      ...(email && { email: username }),
-      ...(username && { username: username }),
-    };
+    const { page, per_page, sortBy, sortDirection } = dto;
 
     const response = await this.dbClient
       .collection<IUser>(this.collection)
-      .find(query, {
-        ...(per_page && { limit: per_page }),
-        ...(page && { skip: page * per_page }),
-        ...(sortBy && { sort: { [sortBy]: sortDirection === "asc" ? 1 : -1 } }),
-      })
+      .find(
+        {},
+        {
+          ...(per_page && { limit: per_page }),
+          ...(page && { skip: page * per_page }),
+          ...(sortBy && {
+            sort: { [sortBy]: sortDirection === "asc" ? 1 : -1 },
+          }),
+        }
+      )
       .toArray();
 
     const totalCount = await this.dbClient
       .collection<IUser>(this.collection)
-      .countDocuments(query);
+      .countDocuments({});
 
     return {
       data: response,
